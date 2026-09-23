@@ -14,13 +14,14 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import plumbingHero from "@/assets/plumbing-hero.jpg";
 
 const navItems = [
   ["HOME", "home"],
   ["ABOUT", "about"],
   ["SERVICES", "services"],
-  ["SERVICE AREA", "service-area"],
-  ["OUR REEL", "reel"],
+  ["OUR SERVICE AREA", "service-area"],
+  ["OUR REEL", "our-reel"],
   ["CONTACT", "contact"],
 ] as const;
 
@@ -33,6 +34,17 @@ const areas = [
 ];
 
 const mapUrl = "https://www.google.com/maps/search/?api=1&query=211+U.S.-287+Elkhart+TX+75839";
+
+const services = [
+  { title: "Leak Detection & Repair", description: "Assessment and repair for visible or suspected plumbing leaks." },
+  { title: "Drain Cleaning", description: "Cleaning for slow, blocked, or backed-up household drains." },
+  { title: "Faucet & Fixture Repair", description: "Repair and replacement support for faucets and plumbing fixtures." },
+  { title: "Toilet Repair & Replacement", description: "Help with common toilet repairs and replacement needs." },
+  { title: "Water Heater Services", description: "Service support for residential water heater systems." },
+  { title: "Pipe Repair", description: "Repair support for damaged, leaking, or aging plumbing lines." },
+  { title: "Emergency Plumbing", description: "Plumbing help for urgent situations requiring professional attention." },
+  { title: "General Plumbing", description: "Practical plumbing support for common residential needs." },
+] as const;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -73,7 +85,9 @@ function Index() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [valueActive, setValueActive] = useState(0);
+  const [serviceActive, setServiceActive] = useState(0);
   const sectionIds = useMemo(() => navItems.map(([, id]) => id), []);
+  const activeService = services[serviceActive] ?? services[0];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -117,6 +131,8 @@ function Index() {
     </div>
 
     <section id="home" className="hero section-anchor">
+      <img className="hero-background" src={plumbingHero} alt="Professional plumber working on polished copper piping" width={1920} height={1080} />
+      <div className="hero-overlay" aria-hidden="true" />
       <div className="hero-grid" aria-hidden="true" />
       <div className="hero-copy">
         <p className="eyebrow hero-eyebrow"><span />TEXAS PLUMBERS, LLC · ELKHART, TEXAS</p>
@@ -126,10 +142,7 @@ function Index() {
           <div className="button-row"><GlossyLink href="tel:+19034073254">CALL / TEXT 903-407-3254</GlossyLink><button className="text-button" onClick={() => navigate("service-area")}>EXPLORE OUR SERVICE AREA <ArrowDown size={16} /></button></div>
         </div>
       </div>
-      <div className="hero-visual" aria-label="Future company photography placeholder">
-        <div className="hero-reflection" />
-        <div className="texas-monogram"><span>TX</span><small>PLUMBING · ELKHART</small></div>
-        <p className="placeholder-label">COMPANY IMAGE / PROJECT PHOTO</p>
+      <div className="hero-decor" aria-hidden="true">
         <div className="floating-badge badge-one"><ShieldCheck size={18} /><span>RESPONSIBLE<br/><strong>MASTER PLUMBER</strong></span></div>
         <div className="floating-badge badge-two"><MapPin size={18} /><span>BASED IN<br/><strong>ELKHART, TX</strong></span></div>
         <div className="floating-badge badge-three"><Sparkles size={18} /><span>PROUDLY<br/><strong>SERVING EAST TEXAS</strong></span></div>
@@ -162,20 +175,28 @@ function Index() {
     </section>
 
     <section id="services" className="services section-anchor section-pad">
-      <div className="services-head"><SectionIntro eyebrow="EDITABLE SERVICE SHOWCASE" title="PLUMBING SERVICES" /><p className="section-copy reveal">Service details can be customized with the company's actual offerings.</p></div>
-      <div className="service-list reveal">
-        {[1,2,3,4].map((n) => <article key={n}><span>SERVICE 0{n}</span><h3>Add Service Name</h3><p>Editable service details</p><ArrowUpRight aria-hidden="true" /></article>)}
+      <div className="services-head"><SectionIntro eyebrow="HOW WE CAN HELP" title="PLUMBING SERVICES" /><p className="section-copy reveal">Professional plumbing support for homes and properties across the communities we serve.</p></div>
+      <div className="service-showcase reveal">
+        <div className="service-list">
+          {services.map((service, index) => <article key={service.title} className={serviceActive === index ? "active" : ""} onMouseEnter={() => setServiceActive(index)} onFocus={() => setServiceActive(index)} onClick={() => setServiceActive(index)} tabIndex={0}>
+            <span>0{index + 1}</span><div><h3>{service.title}</h3><p>{service.description}</p></div><ArrowUpRight aria-hidden="true" />
+          </article>)}
+        </div>
+        <aside className="service-preview" aria-live="polite"><span>SELECTED SERVICE · 0{serviceActive + 1}</span><div className="service-glyph"><i/><i/><i/></div><h3>{activeService.title}</h3><p>{activeService.description}</p></aside>
       </div>
     </section>
 
-    <section id="reel" className="reel section-anchor section-pad">
-      <SectionIntro eyebrow="REAL PROJECT FOOTAGE" title="SEE THE WORK" copy="Take a look at Texas Plumbers, LLC through real project footage and social reels." />
-      {/* Replace this empty reel placeholder with the client's real video */}
-      <div className="reel-placeholder reveal" aria-label="Empty reel placeholder; no video is loaded">
-        <div className="reel-edge"/><span className="reel-label">OUR REEL</span>
-        <div className="play-outline"><Play aria-hidden="true" /></div>
-        <div><h3>VIDEO PLACEHOLDER</h3><p>Client reel will be added here</p></div>
-        <span className="reel-format">16:9 · MP4 / SOCIAL REEL / EMBED</span>
+    <section id="our-reel" className="reel section-anchor section-pad">
+      <div className="reel-orbit reel-orbit-one" aria-hidden="true"/><div className="reel-orbit reel-orbit-two" aria-hidden="true"/>
+      <SectionIntro eyebrow="OUR REEL" title="SEE OUR WORK IN ACTION" copy="Take a look at Texas Plumbers, LLC through real project footage and social reels." />
+      <div className="reel-track">
+        {[1, 2, 3].map((reel) => <div className="reel-card reveal" key={reel} aria-label={`Empty reel ${reel} placeholder; no video is loaded`}>
+          {/* Replace this placeholder with the client's real reel */}
+          <div className="reel-card-shine"/><span className="reel-number">REEL 0{reel}</span>
+          <div className="play-outline"><Play aria-hidden="true" /></div>
+          <div className="reel-card-copy"><h3>REEL PLACEHOLDER</h3><p>Client reel will be added here</p></div>
+          <span className="reel-format">9:16 · EMPTY SLOT</span>
+        </div>)}
       </div>
     </section>
 
