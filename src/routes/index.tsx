@@ -87,6 +87,7 @@ function Index() {
   const [valueActive, setValueActive] = useState(0);
   const [serviceActive, setServiceActive] = useState(0);
   const sectionIds = useMemo(() => navItems.map(([, id]) => id), []);
+  const activeService = services[serviceActive] ?? services[0];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -181,7 +182,7 @@ function Index() {
             <span>0{index + 1}</span><div><h3>{service.title}</h3><p>{service.description}</p></div><ArrowUpRight aria-hidden="true" />
           </article>)}
         </div>
-        <aside className="service-preview" aria-live="polite"><span>SELECTED SERVICE · 0{serviceActive + 1}</span><div className="service-glyph"><i/><i/><i/></div><h3>{services[serviceActive].title}</h3><p>{services[serviceActive].description}</p></aside>
+        <aside className="service-preview" aria-live="polite"><span>SELECTED SERVICE · 0{serviceActive + 1}</span><div className="service-glyph"><i/><i/><i/></div><h3>{activeService.title}</h3><p>{activeService.description}</p></aside>
       </div>
     </section>
 
